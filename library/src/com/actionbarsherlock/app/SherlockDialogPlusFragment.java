@@ -20,7 +20,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -433,6 +432,8 @@ public class SherlockDialogPlusFragment extends SherlockFragmentPlus
             case STYLE_NO_TITLE:
                 mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
+        mDialog.setCancelable(true);
+        mDialog.setCanceledOnTouchOutside(true);
         mDialog.getWindow().setGravity(mGravity);
         if (mDialog != null) {
             return (LayoutInflater)mDialog.getContext().getSystemService(
