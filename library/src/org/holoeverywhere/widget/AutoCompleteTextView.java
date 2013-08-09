@@ -1,7 +1,6 @@
 
 package org.holoeverywhere.widget;
 
-import org.holoeverywhere.ArrayAdapter;
 import org.holoeverywhere.LayoutInflater;
 
 import android.annotation.SuppressLint;

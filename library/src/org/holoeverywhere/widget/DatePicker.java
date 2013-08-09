@@ -87,10 +87,12 @@ public class DatePicker extends FrameLayout {
     private static class SavedState extends BaseSavedState {
         @SuppressWarnings("all")
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+            @Override
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
+            @Override
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
@@ -372,10 +374,7 @@ public class DatePicker extends FrameLayout {
     }
 
     private void reorderSpinners() {
-        final char    DATE                   =    'd';
-        final char    MONTH                  =    'M';
-        final char    YEAR                   =    'y';
-        char[] order =  new char[] {DATE, MONTH, YEAR};//DateFormat.getDateFormatOrder(getContext());
+        char[] order = DateFormat.getDateFormatOrder(getContext());
         final int spinnerCount = order.length;
         for (int i = 0; i < spinnerCount; i++) {
             switch (order[i]) {

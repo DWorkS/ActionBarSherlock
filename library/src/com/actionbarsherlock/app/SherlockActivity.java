@@ -2,13 +2,11 @@ package com.actionbarsherlock.app;
 
 import android.app.Activity;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-
+import android.view.ViewGroup.LayoutParams;
 import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.ActionBarSherlock.OnActionModeFinishedListener;
 import com.actionbarsherlock.ActionBarSherlock.OnActionModeStartedListener;
@@ -245,6 +243,12 @@ public abstract class SherlockActivity extends Activity implements OnCreatePanel
         getSherlock().requestFeature((int)featureId);
     }
 
+    @Override
+    public View findViewById(int id) {
+        getSherlock().ensureActionBar();
+        return super.findViewById(id);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Progress Indication
@@ -268,17 +272,5 @@ public abstract class SherlockActivity extends Activity implements OnCreatePanel
 
     public void setSupportSecondaryProgress(int secondaryProgress) {
         getSherlock().setSecondaryProgress(secondaryProgress);
-    }
-    
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            if (event.getAction() == KeyEvent.ACTION_UP &&
-                keyCode == KeyEvent.KEYCODE_MENU) {
-                openOptionsMenu();
-                return true;
-            }
-        }
-        return super.onKeyUp(keyCode, event);
     }
 }

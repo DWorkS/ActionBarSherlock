@@ -16,11 +16,6 @@
 
 package com.actionbarsherlock.internal.nineoldandroids.animation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.animation.ArgbEvaluator;
-import android.animation.TimeInterpolator;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -29,6 +24,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class provides a simple timing engine for running animations
@@ -584,6 +582,7 @@ public class ValueAnimator extends Animator {
          * active animations to process.
          */
         @Override
+        @SuppressWarnings("fallthrough")
         public void handleMessage(Message msg) {
             boolean callAgain = true;
             ArrayList<ValueAnimator> animations = sAnimations.get();

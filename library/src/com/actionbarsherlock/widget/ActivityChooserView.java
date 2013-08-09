@@ -16,6 +16,12 @@
 
 package com.actionbarsherlock.widget;
 
+import android.os.Build;
+import com.actionbarsherlock.R;
+import com.actionbarsherlock.internal.widget.IcsLinearLayout;
+import com.actionbarsherlock.internal.widget.IcsListPopupWindow;
+import com.actionbarsherlock.view.ActionProvider;
+import com.actionbarsherlock.widget.ActivityChooserModel.ActivityChooserModelClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,7 +30,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,12 +42,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
-import com.actionbarsherlock.R;
-import com.actionbarsherlock.internal.widget.IcsLinearLayout;
-import com.actionbarsherlock.internal.widget.IcsListPopupWindow;
-import com.actionbarsherlock.view.ActionProvider;
-import com.actionbarsherlock.widget.ActivityChooserModel.ActivityChooserModelClient;
 
 /**
  * This class is a view for choosing an activity for handling a given {@link Intent}.
@@ -396,7 +395,11 @@ class ActivityChooserView extends ViewGroup implements ActivityChooserModelClien
         super.onAttachedToWindow();
         ActivityChooserModel dataModel = mAdapter.getDataModel();
         if (dataModel != null) {
-            dataModel.registerObserver(mModelDataSetOberver);
+            try {
+                dataModel.registerObserver(mModelDataSetOberver);
+            } catch (IllegalStateException e) {
+                // Related to #557.
+            }
         }
         mIsAttachedToWindow = true;
     }
@@ -523,6 +526,9 @@ class ActivityChooserView extends ViewGroup implements ActivityChooserModelClien
                         mDefaultActionButtonContentDescription, label);
                 mDefaultActivityButton.setContentDescription(contentDescription);
             }
+
+            // Work-around for #415.
+            mAdapter.setShowDefaultActivity(false, false);
         } else {
             mDefaultActivityButton.setVisibility(View.GONE);
         }
@@ -645,7 +651,8 @@ class ActivityChooserView extends ViewGroup implements ActivityChooserModelClien
 
         private int mMaxActivityCount = MAX_ACTIVITY_COUNT_DEFAULT;
 
-        private boolean mShowDefaultActivity;
+        // Work-around for #415.
+        private boolean mShowDefaultActivity = true;
 
         private boolean mHighlightDefaultActivity;
 
@@ -662,7 +669,11 @@ class ActivityChooserView extends ViewGroup implements ActivityChooserModelClien
             }
             mDataModel = dataModel;
             if (dataModel != null && isShown()) {
-                dataModel.registerObserver(mModelDataSetOberver);
+                try {
+                    dataModel.registerObserver(mModelDataSetOberver);
+                } catch (IllegalStateException e) {
+                    // Related to #557.
+                }
             }
             notifyDataSetChanged();
         }

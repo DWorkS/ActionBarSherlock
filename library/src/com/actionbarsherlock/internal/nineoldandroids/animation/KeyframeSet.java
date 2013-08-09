@@ -18,7 +18,6 @@ package com.actionbarsherlock.internal.nineoldandroids.animation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import android.view.animation.Interpolator;
 
 import com.actionbarsherlock.internal.nineoldandroids.animation.Keyframe.FloatKeyframe;

@@ -2,17 +2,18 @@
 package org.holoeverywhere.app;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.holoeverywhere.HoloEverywhere;
 import org.holoeverywhere.HoloEverywhere.PreferenceImpl;
-import org.holoeverywhere.IHolo;
 import org.holoeverywhere.LayoutInflater;
 import org.holoeverywhere.LayoutInflater.LayoutInflaterCreator;
 import org.holoeverywhere.SystemServiceManager;
 import org.holoeverywhere.SystemServiceManager.SuperSystemService;
 import org.holoeverywhere.ThemeManager;
 import org.holoeverywhere.ThemeManager.SuperStartActivity;
+import org.holoeverywhere.addon.AddonSherlock;
 import org.holoeverywhere.addon.IAddon;
 import org.holoeverywhere.addon.IAddonApplication;
 import org.holoeverywhere.addon.IAddonAttacher;
@@ -20,19 +21,18 @@ import org.holoeverywhere.addon.IAddonBasicAttacher;
 import org.holoeverywhere.preference.PreferenceManagerHelper;
 import org.holoeverywhere.preference.SharedPreferences;
 
-import com.actionbarsherlock.app.SherlockApplication;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 
-public class Application extends SherlockApplication implements
-        IHolo, SuperStartActivity, SuperSystemService, IAddonAttacher<IAddonApplication> {
+public class Application extends android.app.Application implements
+        SuperStartActivity, SuperSystemService, IAddonAttacher<IAddonApplication> {
     private static List<Class<? extends IAddon>> sInitialAddons;
     private static Application sLastInstance;
     static {
         SystemServiceManager.register(LayoutInflaterCreator.class);
+        addInitialAddon(AddonSherlock.class);
     }
 
     public static void addInitialAddon(Class<? extends IAddon> clazz) {
@@ -49,7 +49,7 @@ public class Application extends SherlockApplication implements
     public static void init() {
     }
 
-    private final IAddonAttacher<IAddonApplication> mAttacher =
+    private final IAddonBasicAttacher<IAddonApplication, Application> mAttacher =
             new IAddonBasicAttacher<IAddonApplication, Application>(this);
 
     public Application() {
@@ -62,7 +62,7 @@ public class Application extends SherlockApplication implements
     }
 
     @Override
-    public void addon(List<Class<? extends IAddon>> classes) {
+    public void addon(Collection<Class<? extends IAddon>> classes) {
         mAttacher.addon(classes);
     }
 
@@ -71,22 +71,18 @@ public class Application extends SherlockApplication implements
         return mAttacher.addon(classname);
     }
 
-    @Override
     public SharedPreferences getDefaultSharedPreferences() {
         return PreferenceManagerHelper.getDefaultSharedPreferences(this);
     }
 
-    @Override
     public SharedPreferences getDefaultSharedPreferences(PreferenceImpl impl) {
         return PreferenceManagerHelper.getDefaultSharedPreferences(this, impl);
     }
 
-    @Override
     public LayoutInflater getLayoutInflater() {
         return LayoutInflater.from(this);
     }
 
-    @Override
     public SharedPreferences getSharedPreferences(PreferenceImpl impl, String name, int mode) {
         return PreferenceManagerHelper.wrap(this, impl, name, mode);
     }
@@ -96,7 +92,6 @@ public class Application extends SherlockApplication implements
         return PreferenceManagerHelper.wrap(this, name, mode);
     }
 
-    @Override
     public Application getSupportApplication() {
         return this;
     }
@@ -117,20 +112,20 @@ public class Application extends SherlockApplication implements
     }
 
     @Override
-    public List<Class<? extends IAddon>> obtainAddonsList() {
+    public Collection<Class<? extends IAddon>> obtainAddonsList() {
         return mAttacher.obtainAddonsList();
     }
 
     @Override
     public void onCreate() {
         addon(sInitialAddons);
-        lockAttaching();
         performAddonAction(new AddonCallback<IAddonApplication>() {
             @Override
             public void justAction(IAddonApplication addon) {
                 addon.onPreCreate();
             }
         });
+        lockAttaching();
         super.onCreate();
         performAddonAction(new AddonCallback<IAddonApplication>() {
             @Override

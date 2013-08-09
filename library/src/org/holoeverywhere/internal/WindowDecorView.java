@@ -3,27 +3,16 @@ package org.holoeverywhere.internal;
 
 import static android.view.View.MeasureSpec.AT_MOST;
 import static android.view.View.MeasureSpec.EXACTLY;
-
-import org.holoeverywhere.LayoutInflater;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.internal.view.menu.ContextMenuDecorView;
 
 public class WindowDecorView extends ContextMenuDecorView {
-    public static WindowDecorView inflateDecorView(LayoutInflater layoutInflater, int layout) {
-        WindowDecorView view = new WindowDecorView(layoutInflater.getContext());
-        layoutInflater.inflate(layout, view, true);
-        return view;
-    }
-
     private TypedValue mFixedHeightMajor;
     private TypedValue mFixedHeightMinor;
     private TypedValue mFixedWidthMajor;
@@ -33,12 +22,8 @@ public class WindowDecorView extends ContextMenuDecorView {
     private TypedValue mMinWidthMajor;
     private TypedValue mMinWidthMinor;
 
-    private WindowDecorView(Context context) {
-        this(context, null, null);
-    }
-
-    public WindowDecorView(Context context, View view, ViewGroup.LayoutParams params) {
-        super(context, view, params);
+    public WindowDecorView(Context context) {
+        super(context);
         TypedArray a = context.obtainStyledAttributes(R.styleable.WindowSizes);
         if (a.hasValue(R.styleable.WindowSizes_windowMinWidthMajor)) {
             a.getValue(R.styleable.WindowSizes_windowMinWidthMajor,
@@ -77,11 +62,7 @@ public class WindowDecorView extends ContextMenuDecorView {
 
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        int left = Math.max(getPaddingLeft(), insets.left);
-        int top = Math.max(getPaddingTop(), insets.top);
-        int right = Math.max(getPaddingRight(), insets.right);
-        int bottom = Math.max(getPaddingBottom(), insets.bottom);
-        setPadding(left, top, right, bottom);
+        setPadding(insets.left, insets.top, insets.right, insets.bottom);
         return true;
     }
 

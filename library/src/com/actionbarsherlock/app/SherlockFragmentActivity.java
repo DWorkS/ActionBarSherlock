@@ -1,7 +1,6 @@
 package com.actionbarsherlock.app;
 
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Watson;
 import android.util.Log;
@@ -9,18 +8,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-
 import com.actionbarsherlock.ActionBarSherlock;
-import com.actionbarsherlock.ActionBarSherlock.OnActionModeFinishedListener;
-import com.actionbarsherlock.ActionBarSherlock.OnActionModeStartedListener;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
+import static com.actionbarsherlock.ActionBarSherlock.OnActionModeFinishedListener;
+import static com.actionbarsherlock.ActionBarSherlock.OnActionModeStartedListener;
+
 /** @see {@link android.support.v4.app.Watson} */
 public class SherlockFragmentActivity extends Watson implements OnActionModeStartedListener, OnActionModeFinishedListener {
-    private static final boolean DEBUG = false;
     private static final String TAG = "SherlockFragmentActivity";
 
     private ActionBarSherlock mSherlock;
@@ -140,33 +138,33 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
     ///////////////////////////////////////////////////////////////////////////
 
     public MenuInflater getSupportMenuInflater() {
-        if (DEBUG) Log.d(TAG, "[getSupportMenuInflater]");
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[getSupportMenuInflater]");
 
         return getSherlock().getMenuInflater();
     }
 
     public void invalidateOptionsMenu() {
-        if (DEBUG) Log.d(TAG, "[invalidateOptionsMenu]");
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[invalidateOptionsMenu]");
 
         getSherlock().dispatchInvalidateOptionsMenu();
     }
 
     public void supportInvalidateOptionsMenu() {
-        if (DEBUG) Log.d(TAG, "[supportInvalidateOptionsMenu]");
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[supportInvalidateOptionsMenu]");
 
         invalidateOptionsMenu();
     }
 
     @Override
     public final boolean onCreatePanelMenu(int featureId, android.view.Menu menu) {
-        if (DEBUG) Log.d(TAG, "[onCreatePanelMenu] featureId: " + featureId + ", menu: " + menu);
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onCreatePanelMenu] featureId: " + featureId + ", menu: " + menu);
 
         if (featureId == Window.FEATURE_OPTIONS_PANEL && !mIgnoreNativeCreate) {
             mIgnoreNativeCreate = true;
             boolean result = getSherlock().dispatchCreateOptionsMenu(menu);
             mIgnoreNativeCreate = false;
 
-            if (DEBUG) Log.d(TAG, "[onCreatePanelMenu] returning " + result);
+            if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onCreatePanelMenu] returning " + result);
             return result;
         }
         return super.onCreatePanelMenu(featureId, menu);
@@ -179,14 +177,14 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
 
     @Override
     public final boolean onPreparePanel(int featureId, View view, android.view.Menu menu) {
-        if (DEBUG) Log.d(TAG, "[onPreparePanel] featureId: " + featureId + ", view: " + view + ", menu: " + menu);
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onPreparePanel] featureId: " + featureId + ", view: " + view + ", menu: " + menu);
 
         if (featureId == Window.FEATURE_OPTIONS_PANEL && !mIgnoreNativePrepare) {
             mIgnoreNativePrepare = true;
             boolean result = getSherlock().dispatchPrepareOptionsMenu(menu);
             mIgnoreNativePrepare = false;
 
-            if (DEBUG) Log.d(TAG, "[onPreparePanel] returning " + result);
+            if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onPreparePanel] returning " + result);
             return result;
         }
         return super.onPreparePanel(featureId, view, menu);
@@ -199,14 +197,14 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
 
     @Override
     public final boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
-        if (DEBUG) Log.d(TAG, "[onMenuItemSelected] featureId: " + featureId + ", item: " + item);
+        if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onMenuItemSelected] featureId: " + featureId + ", item: " + item.getTitle());
 
         if (featureId == Window.FEATURE_OPTIONS_PANEL && !mIgnoreNativeSelected) {
             mIgnoreNativeSelected = true;
             boolean result = getSherlock().dispatchOptionsItemSelected(item);
             mIgnoreNativeSelected = false;
 
-            if (DEBUG) Log.d(TAG, "[onMenuItemSelected] returning " + result);
+            if (ActionBarSherlock.DEBUG) Log.d(TAG, "[onMenuItemSelected] returning " + result);
             return result;
         }
         return super.onMenuItemSelected(featureId, item);
@@ -277,6 +275,12 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
         getSherlock().requestFeature((int)featureId);
     }
 
+    @Override
+    public View findViewById(int id) {
+        getSherlock().ensureActionBar();
+        return super.findViewById(id);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Progress Indication
@@ -301,16 +305,4 @@ public class SherlockFragmentActivity extends Watson implements OnActionModeStar
     public void setSupportSecondaryProgress(int secondaryProgress) {
         getSherlock().setSecondaryProgress(secondaryProgress);
     }
-	
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-	        if (event.getAction() == KeyEvent.ACTION_UP &&
-	            keyCode == KeyEvent.KEYCODE_MENU) {
-	            openOptionsMenu();
-	            return true;
-	        }
-	    }
-	    return super.onKeyUp(keyCode, event);
-	}
 }

@@ -32,7 +32,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.internal.nineoldandroids.animation.Animator;
@@ -187,7 +186,7 @@ public class ScrollingTabContainerView extends NineHorizontalScrollView
     }
 
     private IcsLinearLayout createTabLayout() {
-        final IcsLinearLayout tabLayout = (IcsLinearLayout) LayoutInflater.from(getContext())
+        final TabsLinearLayout tabLayout = (TabsLinearLayout) LayoutInflater.from(getContext())
                 .inflate(R.layout.abs__action_bar_tab_bar_view, null);
         tabLayout.setMeasureWithLargestChildEnabled(true);
         tabLayout.setLayoutParams(new LinearLayout.LayoutParams(
