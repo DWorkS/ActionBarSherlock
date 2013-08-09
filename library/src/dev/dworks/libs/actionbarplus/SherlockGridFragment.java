@@ -1,4 +1,4 @@
-package com.actionbarsherlock.app;
+package dev.dworks.libs.actionbarplus;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.actionbarsherlock.R;
+import com.actionbarsherlock.app.SherlockFragment;
 
 public class SherlockGridFragment extends SherlockFragment {
 	private ListAdapter mAdapter;

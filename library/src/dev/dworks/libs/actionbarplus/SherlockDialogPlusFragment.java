@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.actionbarsherlock.app;
+package dev.dworks.libs.actionbarplus;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;

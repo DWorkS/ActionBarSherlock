@@ -1,4 +1,4 @@
-package com.actionbarsherlock.app;
+package dev.dworks.libs.actionbarplus;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentPlus;
@@ -6,6 +6,7 @@ import android.support.v4.app.Watson.OnCreateOptionsMenuListener;
 import android.support.v4.app.Watson.OnOptionsItemSelectedListener;
 import android.support.v4.app.Watson.OnPrepareOptionsMenuListener;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.internal.view.menu.MenuItemWrapper;
 import com.actionbarsherlock.internal.view.menu.MenuWrapper;
 import com.actionbarsherlock.view.Menu;
