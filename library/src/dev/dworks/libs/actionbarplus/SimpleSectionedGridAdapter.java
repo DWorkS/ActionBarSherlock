@@ -30,12 +30,16 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     private LayoutInflater mLayoutInflater;
     private ListAdapter mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<Section>();
-	private int mColumns;
+	private int mNumColumns;
 	private int mWidth;
 	private Context mContext;
 //	private View mLastHeaderViewSeen;
 	private View mLastViewSeen;
-	private GridView mGridView;
+	private int mColumnWidth;
+	private int mHorizontalSpacing;
+	private int mStrechMode;
+	private int requestedColumnWidth;
+	private int requestedHorizontalSpacing;
 
     public static class Section {
         int firstPosition;
@@ -74,9 +78,57 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     }
     
     public void setGridView(GridView gridView){
-    	mGridView = gridView;
-        mColumns = gridView.getNumColumns();
+    	mStrechMode = gridView.getStretchMode();
+        mNumColumns = gridView.getNumColumns();
+        mColumnWidth = gridView.getColumnWidth();
     	mWidth = gridView.getWidth();
+    	mHorizontalSpacing = gridView.getHorizontalSpacing();
+    }
+    
+    private int getHeaderSize(){
+/*        switch (mStrechMode) {
+        case GridView.NO_STRETCH:
+            // Nobody stretches
+            mColumnWidth = requestedColumnWidth;
+            mHorizontalSpacing = requestedHorizontalSpacing;
+            break;
+
+        default:
+            int spaceLeftOver = mWidth - (mNumColumns * requestedColumnWidth) -
+                    ((mNumColumns - 1) * requestedHorizontalSpacing);
+            switch (mStrechMode) {
+            case GridView.STRETCH_COLUMN_WIDTH:
+                // Stretch the columns
+                mColumnWidth = requestedColumnWidth + spaceLeftOver / mNumColumns;
+                mHorizontalSpacing = requestedHorizontalSpacing;
+                break;
+
+            case GridView.STRETCH_SPACING:
+                // Stretch the spacing between columns
+                mColumnWidth = requestedColumnWidth;
+                if (mNumColumns > 1) {
+                    mHorizontalSpacing = requestedHorizontalSpacing + 
+                        spaceLeftOver / (mNumColumns - 1);
+                } else {
+                    mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
+                }
+                break;
+
+            case GridView.STRETCH_SPACING_UNIFORM:
+                // Stretch the spacing between columns
+                mColumnWidth = requestedColumnWidth;
+                if (mNumColumns > 1) {
+                    mHorizontalSpacing = requestedHorizontalSpacing + 
+                        spaceLeftOver / (mNumColumns + 1);
+                } else {
+                    mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
+                }
+                break;
+            }
+
+            break;
+        }*/
+		return mWidth + ((mNumColumns - 1) * (mColumnWidth + mHorizontalSpacing)) ;
     }
 
     public void setSections(Section[] sections) {
@@ -96,7 +148,7 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
 			Section section = sections[i];
     		Section sectionAdd;
  
-        	for (int j = 0; j < mColumns - 1; j++) {
+        	for (int j = 0; j < mNumColumns - 1; j++) {
         		sectionAdd = new Section(section.firstPosition, section.title);
         		sectionAdd.type = TYPE_HEADER_FILLER;
         		sectionAdd.sectionedPosition = sectionAdd.firstPosition + offset;
@@ -113,8 +165,8 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
             if(i+1 < sections.length){
             	int nextPos = sections[i+1].firstPosition;
             	int itemsCount = nextPos - section.firstPosition;
-            	int dummyCount = mColumns - (itemsCount % mColumns);
-            	if(mColumns != dummyCount){
+            	int dummyCount = mNumColumns - (itemsCount % mNumColumns);
+            	if(mNumColumns != dummyCount){
 	            	for (int j = 0 ;j < dummyCount; j++) {
 	                	sectionAdd = new Section(section.firstPosition, section.title);
 	            		sectionAdd.type = TYPE_FILLER;
@@ -215,7 +267,6 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-    	int i = 0;
         if (isSectionHeaderPosition(position)) {
         	HeaderView header;
         	TextView view;
@@ -232,7 +283,7 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
 				header = (HeaderView) convertView.findViewById(R.id.header_layout);
 				view = (TextView) convertView.findViewById(R.id.header);
 	            view.setText(mSections.get(position).title);
-	            header.setHeaderWidth(mWidth);
+	            header.setHeaderWidth(getHeaderSize());
 	            header.setView(view);
 	            header.forceLayout();
 	            //view.setBackgroundColor(Color.BLUE);

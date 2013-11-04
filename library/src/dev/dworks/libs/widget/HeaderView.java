@@ -65,7 +65,7 @@ public class HeaderView extends FrameLayout {
                         childState << MEASURED_HEIGHT_STATE_SHIFT));
     }*/
     
-    @Override
+/*    @Override
     protected void onLayout(boolean changed, int left, int top, int right,int bottom) {
     	if(!set){
     		set = true;
@@ -74,5 +74,5 @@ public class HeaderView extends FrameLayout {
     		set = false;
         	super.onLayout(changed, left, top, right, bottom);
     	}
-    }
+    }*/
 }

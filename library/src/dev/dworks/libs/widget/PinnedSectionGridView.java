@@ -3,6 +3,7 @@ package dev.dworks.libs.widget;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -169,7 +170,7 @@ public class PinnedSectionGridView extends GridView {
 		
 		// request new view
 		View pinnedView = getAdapter().getView(position, recycleView, PinnedSectionGridView.this);
-		
+		pinnedView.setBackgroundColor(Color.WHITE);
 		// read layout parameters
 		LayoutParams layoutParams = (LayoutParams) pinnedView.getLayoutParams();
 		
