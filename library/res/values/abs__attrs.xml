@@ -429,4 +429,8 @@
     <declare-styleable name="SherlockView">
         <attr name="android:focusable"/>
     </declare-styleable>
+    
+    <declare-styleable name="AbsSpinner">
+		<attr name="android:entries" />
+	</declare-styleable>
 </resources>

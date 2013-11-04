@@ -17,6 +17,7 @@
 package com.actionbarsherlock.internal.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.os.Build;
@@ -26,7 +27,11 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsSpinner;
+import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+
+import com.actionbarsherlock.R;
 
 /**
  * An abstract base class for spinner widgets. SDK users will probably not
@@ -68,21 +73,17 @@ public abstract class IcsAbsSpinner extends IcsAdapterView<SpinnerAdapter> {
         super(context, attrs, defStyle);
         initAbsSpinner();
 
-        /*
         TypedArray a = context.obtainStyledAttributes(attrs,
-                com.android.internal.R.styleable.AbsSpinner, defStyle, 0);
-
-        CharSequence[] entries = a.getTextArray(R.styleable.AbsSpinner_entries);
+                R.styleable.AbsSpinner, defStyle, 0);
+        CharSequence[] entries = a
+                .getTextArray(R.styleable.AbsSpinner_android_entries);
         if (entries != null) {
-            ArrayAdapter<CharSequence> adapter =
-                    new ArrayAdapter<CharSequence>(context,
-                            R.layout.simple_spinner_item, entries);
-            adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+                    context, R.layout.sherlock_spinner_item, entries);
+            adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
             setAdapter(adapter);
         }
-
         a.recycle();
-        */
     }
 
     /**

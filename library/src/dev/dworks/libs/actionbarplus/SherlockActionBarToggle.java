@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.actionbarsherlock.app;
+package dev.dworks.libs.actionbarplus;
 
 import android.app.Activity;
 import android.content.res.Configuration;

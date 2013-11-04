@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Label displaying current network data usage warning threshold. [CHAR LIMIT=18] -->
+    <string name="data_usage_sweep_warning">warning</string>
+    <!-- Label displaying current network data usage limit threshold. [CHAR LIMIT=18] -->
+    <string name="data_usage_sweep_limit">limit</string>
+
+    
+</resources>

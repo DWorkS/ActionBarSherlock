@@ -16,10 +16,11 @@
  */
 
 
-package com.actionbarsherlock.app;
+package dev.dworks.libs.actionbarplus;
 
 import java.lang.reflect.Method;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -37,39 +38,13 @@ import com.actionbarsherlock.R;
  * in an action bar without some really gross hacks. Since the MR2 SDK is not published as of
  * this writing, the new API is accessed via reflection here if available.
  */
-public class SherlockActionBarToggleCompat {
-    private static final String TAG = "SherlockActionBarDrawerToggleCompat";
+public class SherlockActionBarToggleHoneycomb {
+    private static final String TAG = "SherlockActionBarDrawerToggleHoneycomb";
 
     private static final int[] THEME_ATTRS = new int[] {
-//    	R.attr.homeAsUpIndicator
-        R.attr.homeAsUpIndicator
+            R.attr.homeAsUpIndicator
     };
-    
-    /**
-     * Listener for monitoring events about sliding panes.
-     */
-    protected abstract interface ToggleListener {
-        /**
-         * Called when a sliding pane's position changes.
-         * @param panel The child view that was moved
-         * @param slideOffset The new offset of this sliding pane within its range, from 0-1
-         */
-    	abstract void onViewSlide(View panel, float slideOffset);
-        /**
-         * Called when a sliding pane becomes slid completely open. The pane may or may not
-         * be interactive at this point depending on how much of the pane is visible.
-         * @param panel The child view that was slid to an open position, revealing other panes
-         */
-    	abstract void onViewOpened(View panel);
 
-        /**
-         * Called when a sliding pane becomes slid completely closed. The pane is now guaranteed
-         * to be interactive. It may now obscure other views in the layout.
-         * @param panel The child view that was slid to a closed position
-         */
-        abstract void onViewClosed(View panel);
-    }
-    
     public static Object setActionBarUpIndicator(Object info, Activity activity,
             Drawable drawable, int contentDescRes) {
         if (info == null) {
@@ -78,7 +53,7 @@ public class SherlockActionBarToggleCompat {
         final SetIndicatorInfo sii = (SetIndicatorInfo) info;
         if (sii.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar = ((SherlockFragmentActivity)activity).getSupportActionBar();
+                final ActionBar actionBar = activity.getActionBar();
                 sii.setHomeAsUpIndicator.invoke(actionBar, drawable);
                 sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
             } catch (Exception e) {
@@ -100,7 +75,7 @@ public class SherlockActionBarToggleCompat {
         final SetIndicatorInfo sii = (SetIndicatorInfo) info;
         if (sii.setHomeAsUpIndicator != null) {
             try {
-                final ActionBar actionBar = ((SherlockFragmentActivity)activity).getSupportActionBar();
+                final ActionBar actionBar = activity.getActionBar();
                 sii.setHomeActionContentDescription.invoke(actionBar, contentDescRes);
             } catch (Exception e) {
                 Log.w(TAG, "Couldn't set content description via JB-MR2 API", e);
@@ -134,12 +109,10 @@ public class SherlockActionBarToggleCompat {
                 // Oh well. We'll use the other mechanism below instead.
             }
 
-            int homeRes = android.R.id.home;
-            View home = activity.findViewById(homeRes);
-
+            final View home = activity.findViewById(android.R.id.home);
             if (home == null) {
-                home = activity.findViewById(R.id.abs__home);
-                homeRes = R.id.abs__home;
+                // Action bar doesn't have a known configuration, an OEM messed with things.
+                return;
             }
 
             final ViewGroup parent = (ViewGroup) home.getParent();
