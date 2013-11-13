@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.widget.GridView;
 
 public class Utils {
 
@@ -26,7 +27,7 @@ public class Utils {
 					flags, null).toString();
 		}
 	}
-	
+
 	public static class Preconditions {
 
 	    /**

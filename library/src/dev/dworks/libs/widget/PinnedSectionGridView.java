@@ -1,6 +1,7 @@
 package dev.dworks.libs.widget;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -326,5 +327,11 @@ public class PinnedSectionGridView extends GridView {
 			drawChild(canvas, mPinnedShadow.view, getDrawingTime());
 			canvas.restore();
 		}
+	}
+	
+	@Override
+	protected void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
 	}
 }

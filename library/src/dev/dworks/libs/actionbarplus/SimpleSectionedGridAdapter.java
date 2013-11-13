@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.R;
 
 import dev.dworks.libs.widget.FillerView;
-import dev.dworks.libs.widget.HeaderView;
+import dev.dworks.libs.widget.HeaderLayout;
 import dev.dworks.libs.widget.PinnedSectionGridView.PinnedSectionGridAdapter;
 
 public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSectionGridAdapter{
@@ -30,16 +30,17 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     private LayoutInflater mLayoutInflater;
     private ListAdapter mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<Section>();
-	private int mNumColumns;
-	private int mWidth;
 	private Context mContext;
 //	private View mLastHeaderViewSeen;
 	private View mLastViewSeen;
+	private int mNumColumns;
+	private int mWidth;
 	private int mColumnWidth;
 	private int mHorizontalSpacing;
 	private int mStrechMode;
 	private int requestedColumnWidth;
 	private int requestedHorizontalSpacing;
+	private GridView mGridView;
 
     public static class Section {
         int firstPosition;
@@ -78,56 +79,53 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     }
     
     public void setGridView(GridView gridView){
+    	mGridView = gridView;
     	mStrechMode = gridView.getStretchMode();
         mNumColumns = gridView.getNumColumns();
-        mColumnWidth = gridView.getColumnWidth();
     	mWidth = gridView.getWidth();
-    	mHorizontalSpacing = gridView.getHorizontalSpacing();
+        requestedColumnWidth = gridView.getColumnWidth();
+    	requestedHorizontalSpacing = gridView.getHorizontalSpacing();
     }
     
     private int getHeaderSize(){
-/*        switch (mStrechMode) {
-        case GridView.NO_STRETCH:
-            // Nobody stretches
+    	if(mWidth != mGridView.getWidth()){
+	    	mStrechMode = mGridView.getStretchMode();
+	        mNumColumns = mGridView.getNumColumns();
+	    	mWidth = mGridView.getWidth();
+	        requestedColumnWidth = mGridView.getColumnWidth();
+	    	requestedHorizontalSpacing = mGridView.getHorizontalSpacing();
+    	}
+    	
+        int spaceLeftOver = mWidth - (mNumColumns * requestedColumnWidth) -
+                ((mNumColumns - 1) * requestedHorizontalSpacing);
+        switch (mStrechMode) {
+        case GridView.NO_STRETCH:            // Nobody stretches
+        	mWidth -= spaceLeftOver;
             mColumnWidth = requestedColumnWidth;
             mHorizontalSpacing = requestedHorizontalSpacing;
             break;
 
-        default:
-            int spaceLeftOver = mWidth - (mNumColumns * requestedColumnWidth) -
-                    ((mNumColumns - 1) * requestedHorizontalSpacing);
-            switch (mStrechMode) {
-            case GridView.STRETCH_COLUMN_WIDTH:
-                // Stretch the columns
-                mColumnWidth = requestedColumnWidth + spaceLeftOver / mNumColumns;
-                mHorizontalSpacing = requestedHorizontalSpacing;
-                break;
-
-            case GridView.STRETCH_SPACING:
-                // Stretch the spacing between columns
-                mColumnWidth = requestedColumnWidth;
-                if (mNumColumns > 1) {
-                    mHorizontalSpacing = requestedHorizontalSpacing + 
-                        spaceLeftOver / (mNumColumns - 1);
-                } else {
-                    mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
-                }
-                break;
-
-            case GridView.STRETCH_SPACING_UNIFORM:
-                // Stretch the spacing between columns
-                mColumnWidth = requestedColumnWidth;
-                if (mNumColumns > 1) {
-                    mHorizontalSpacing = requestedHorizontalSpacing + 
-                        spaceLeftOver / (mNumColumns + 1);
-                } else {
-                    mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
-                }
-                break;
-            }
-
+        case GridView.STRETCH_COLUMN_WIDTH:
+            mColumnWidth = requestedColumnWidth + spaceLeftOver / mNumColumns;
+            mHorizontalSpacing = requestedHorizontalSpacing;
             break;
-        }*/
+
+        case GridView.STRETCH_SPACING:
+            mColumnWidth = requestedColumnWidth;
+            if (mNumColumns > 1) {
+                mHorizontalSpacing = requestedHorizontalSpacing + 
+                    spaceLeftOver / (mNumColumns - 1);
+            } else {
+                mHorizontalSpacing = requestedHorizontalSpacing + spaceLeftOver;
+            }
+            break;
+
+        case GridView.STRETCH_SPACING_UNIFORM:
+            mColumnWidth = requestedColumnWidth;
+            mHorizontalSpacing = requestedHorizontalSpacing;
+        	mWidth = mWidth - spaceLeftOver + (2 * mHorizontalSpacing);
+            break;
+        }
 		return mWidth + ((mNumColumns - 1) * (mColumnWidth + mHorizontalSpacing)) ;
     }
 
@@ -268,7 +266,7 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (isSectionHeaderPosition(position)) {
-        	HeaderView header;
+        	HeaderLayout header;
         	TextView view;
         	if(null == convertView){
         		convertView = mLayoutInflater.inflate(mSectionResourceId, parent, false);
@@ -280,21 +278,17 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
         	}
 			switch (mSections.get(position).type) {
 			case TYPE_HEADER:
-				header = (HeaderView) convertView.findViewById(R.id.header_layout);
+				header = (HeaderLayout) convertView.findViewById(R.id.header_layout);
 				view = (TextView) convertView.findViewById(R.id.header);
 	            view.setText(mSections.get(position).title);
 	            header.setHeaderWidth(getHeaderSize());
-	            header.setView(view);
-	            header.forceLayout();
 	            //view.setBackgroundColor(Color.BLUE);
 	            break;
 			case TYPE_HEADER_FILLER:
-				header = (HeaderView) convertView.findViewById(R.id.header_layout);
+				header = (HeaderLayout) convertView.findViewById(R.id.header_layout);
 				view = (TextView) convertView.findViewById(R.id.header);
 	            view.setText("");
 	            header.setHeaderWidth(0);
-	            header.setView(view);
-	            header.forceLayout();
 				break;
 			default:
 				convertView = getFillerView(convertView, parent, mLastViewSeen);
