@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Hari Krishna Dulipudi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.dworks.libs.actionbarplus;
 
 import java.util.Arrays;
@@ -13,6 +29,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.actionbarsherlock.R;
+
 import dev.dworks.libs.widget.PinnedSectionListView.PinnedSectionListAdapter;
 
 public class SimpleSectionedListAdapter extends BaseAdapter implements PinnedSectionListAdapter{
@@ -167,12 +186,18 @@ public class SimpleSectionedListAdapter extends BaseAdapter implements PinnedSec
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (isSectionHeaderPosition(position)) {
-            TextView view = (TextView) convertView;
-            if (view == null) {
-                view = (TextView) mLayoutInflater.inflate(mSectionResourceId, parent, false);
-            }
+        	TextView view;
+        	if(null == convertView){
+        		convertView = mLayoutInflater.inflate(mSectionResourceId, parent, false);
+        	}
+        	else{
+        		if(null == convertView.findViewById(R.id.header)){
+        			convertView = mLayoutInflater.inflate(mSectionResourceId, parent, false);	
+        		}
+        	}
+            view = (TextView) convertView.findViewById(R.id.header);
             view.setText(mSections.get(position).title);
-            return view;
+            return convertView;
 
         } else {
             return mBaseAdapter.getView(sectionedPositionToPosition(position), convertView, parent);

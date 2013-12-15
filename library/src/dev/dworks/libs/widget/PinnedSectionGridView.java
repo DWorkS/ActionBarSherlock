@@ -1,7 +1,22 @@
+/*
+ * Copyright 2013 Hari Krishna Dulipudi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.dworks.libs.widget;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,6 +29,7 @@ import android.widget.ListAdapter;
 import android.widget.SectionIndexer;
 
 import com.actionbarsherlock.BuildConfig;
+import com.actionbarsherlock.R;
 
 /**
  * ListView capable to pin views at its top while the rest is still scrolled.
@@ -42,6 +58,12 @@ public class PinnedSectionGridView extends GridView {
 	// pinned view Y-translation; we use to stick pinned view to the next section
 	int mTranslateY;
     int mFirstPosition = 0;
+
+	private int mNumColumns;
+
+	private int mHorizontalSpacing;
+
+	private int mColumnWidth;
     
 	public PinnedSectionGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -51,6 +73,36 @@ public class PinnedSectionGridView extends GridView {
 	public PinnedSectionGridView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		initView();
+	}
+	
+	@Override
+	public void setNumColumns(int numColumns) {
+		mNumColumns = numColumns;
+		super.setNumColumns(numColumns);
+	}
+	
+	public int getNumColumns(){
+		return mNumColumns;
+	}
+	
+	@Override
+	public void setHorizontalSpacing(int horizontalSpacing) {
+		mHorizontalSpacing = horizontalSpacing;
+		super.setHorizontalSpacing(horizontalSpacing);
+	}
+	
+	public int getHorizontalSpacing(){
+		return mHorizontalSpacing;
+	}
+	
+	@Override
+	public void setColumnWidth(int columnWidth) {
+		mColumnWidth = columnWidth;
+		super.setColumnWidth(columnWidth);
+	}
+	
+	public int getColumnWidth(){
+		return mColumnWidth;
 	}
 	
 	private void initView() {
@@ -171,6 +223,8 @@ public class PinnedSectionGridView extends GridView {
 		
 		// request new view
 		View pinnedView = getAdapter().getView(position, recycleView, PinnedSectionGridView.this);
+		HeaderLayout header = (HeaderLayout) pinnedView.findViewById(R.id.header_layout);
+		header.setHeaderWidth(1);
 		pinnedView.setBackgroundColor(Color.WHITE);
 		// read layout parameters
 		LayoutParams layoutParams = (LayoutParams) pinnedView.getLayoutParams();
@@ -327,11 +381,5 @@ public class PinnedSectionGridView extends GridView {
 			drawChild(canvas, mPinnedShadow.view, getDrawingTime());
 			canvas.restore();
 		}
-	}
-	
-	@Override
-	protected void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
-		super.onConfigurationChanged(newConfig);
 	}
 }

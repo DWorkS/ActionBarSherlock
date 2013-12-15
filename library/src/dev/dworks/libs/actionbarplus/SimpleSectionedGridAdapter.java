@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Hari Krishna Dulipudi
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.dworks.libs.actionbarplus;
 
 import java.util.Arrays;
@@ -19,6 +35,7 @@ import com.actionbarsherlock.R;
 
 import dev.dworks.libs.widget.FillerView;
 import dev.dworks.libs.widget.HeaderLayout;
+import dev.dworks.libs.widget.PinnedSectionGridView;
 import dev.dworks.libs.widget.PinnedSectionGridView.PinnedSectionGridAdapter;
 
 public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSectionGridAdapter{
@@ -79,21 +96,24 @@ public class SimpleSectionedGridAdapter extends BaseAdapter implements PinnedSec
     }
     
     public void setGridView(GridView gridView){
+    	if(!(gridView instanceof PinnedSectionGridView)){
+    		throw new IllegalArgumentException("Does your grid view extends PinnedSectionGridView?");
+    	}
     	mGridView = gridView;
     	mStrechMode = gridView.getStretchMode();
-        mNumColumns = gridView.getNumColumns();
-    	mWidth = gridView.getWidth();
-        requestedColumnWidth = gridView.getColumnWidth();
-    	requestedHorizontalSpacing = gridView.getHorizontalSpacing();
+    	mWidth = gridView.getWidth() - (mGridView.getPaddingLeft() + mGridView.getPaddingRight());
+        mNumColumns = ((PinnedSectionGridView)gridView).getNumColumns();
+        requestedColumnWidth = ((PinnedSectionGridView)gridView).getColumnWidth();
+    	requestedHorizontalSpacing = ((PinnedSectionGridView)gridView).getHorizontalSpacing();
     }
     
     private int getHeaderSize(){
     	if(mWidth != mGridView.getWidth()){
 	    	mStrechMode = mGridView.getStretchMode();
-	        mNumColumns = mGridView.getNumColumns();
-	    	mWidth = mGridView.getWidth();
-	        requestedColumnWidth = mGridView.getColumnWidth();
-	    	requestedHorizontalSpacing = mGridView.getHorizontalSpacing();
+	    	mWidth = mGridView.getWidth() - (mGridView.getPaddingLeft() + mGridView.getPaddingRight());
+	        mNumColumns = ((PinnedSectionGridView)mGridView).getNumColumns();
+	        requestedColumnWidth = ((PinnedSectionGridView)mGridView).getColumnWidth();
+	    	requestedHorizontalSpacing = ((PinnedSectionGridView)mGridView).getHorizontalSpacing();
     	}
     	
         int spaceLeftOver = mWidth - (mNumColumns * requestedColumnWidth) -
